@@ -1,0 +1,41 @@
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  
+     id Int @id @unique
+     isVerfied Boolean 
+     email String @unique
+   
+}
+
+model Article {
+    id String @id @default(cuid())
+    title String 
+    content String 
+    summary String 
+    userId String
+    user User @relation(fields: [userId])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    quizzes Quiz[]
+}
+
+model Field {\
+  id String @id @default(cuid())
+  question String 
+  options String[]
+  answer String
+  articleld String 
+  article Article @relation(fields: [articleld])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
