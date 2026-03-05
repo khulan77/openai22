@@ -1,29 +1,17 @@
-import "dotenv/config";
-import { PrismaClient } from "../../generated/prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { NextResponse } from "next/server";
 
-const connectionString = process.env.DATABASE_URL;
-
-const adapter = new PrismaPg({ connectionString });
-const prisma = new PrismaClient({ adapter });
-
-async function main() {
-  const user = await prisma.user.create({
-    data: {
-      email: "alice@prisma.io",
-      id: "1",
-    },
-  });
-
-  console.log(user);
+export async function Post(request: Request) {
+try{
+    const user = await prisma.user.create({
+        data: {
+            email: "alice@prisma.io",
+            id: "1",
+        },
+    });
+    console.log(user);
+    return NextResponse.json({message: "User created successfully"},{status:201});
+} catch (error) {
+    console.error(error);
+    return new Response("Error crteating user", {status : 500})
 }
-
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+}
