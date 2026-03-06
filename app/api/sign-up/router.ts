@@ -5,6 +5,7 @@ import { error } from "node:console";
 type Event = {
   type: string;
   data: {
+    id: number;
     frist_name: string;
     last_name: string;
     email_addresses: { email_address: string }[];
@@ -20,6 +21,7 @@ export async function POST(req: NextResponse) {
     );
   }
   const svixId = req.headers.get("svix-id");
+
   const svixTimestamp = req.headers.get("svix-timestamp");
   const svixSignature = req.headers.get("svix-signature");
 
@@ -41,7 +43,7 @@ export async function POST(req: NextResponse) {
       return NextResponse.json({ error: "Ignore event" }, { status: 400 });
     }
 
-    const { email_addresses, frist_name, last_name } = event.data;
+    const { id, email_addresses, frist_name, last_name } = event.data;
 
     await prisma.user.create({
       data: {
