@@ -51,8 +51,7 @@ export async function POST(req: NextResponse) {
       },
     });
 
-return NextResponse.json({ message: })
-
+    return NextResponse.json({ message: "Success" }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: "invalid signature" }, { status: 500 });
   }
