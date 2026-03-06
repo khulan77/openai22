@@ -29,5 +29,5 @@ export default function HomePage() {
     }
   };
 
-  return <div>Home</div>;
+  return <h1 className="text-2xl font-semibold">Home</h1>;
 }
