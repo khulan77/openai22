@@ -20,47 +20,48 @@ model User {
 }
 
 model Article {
-  id        String   @id @default(cuid())
-  title     String
-  content   String
-  summary   String
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  quizzes   Quiz[]
-}
-
-model Quiz {
   id           String        @id @default(cuid())
-  question     String
-  options      String[]
-  answer       String
-  articleId    String
-  article      Article       @relation(fields: [articleId], references: [id])
+  title        String
+  content      String
+  summary      String
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+  quizzes      Quiz[]
   quizAttempts QuizAttempt[]
   userScores   UserScore[]
 }
 
+model Quiz {
+  id        String   @id @default(cuid())
+  question  String
+  options   String[]
+  answer    String
+  articleId String
+  article   Article  @relation(fields: [articleId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model UserScore {
   id        String   @id @default(cuid())
-  quizId    String
+  articleId String
   userId    String
   score     Int
+  timeSpent Int?
   createdAt DateTime @default(now())
-  quiz      Quiz     @relation(fields: [quizId], references: [id])
+  article   Article  @relation(fields: [articleId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
 }
 
 model QuizAttempt {
   id        String   @id @default(cuid())
-  quizId    String
+  articleId String
   userId    String
   score     Int
   timeSpent Int
   createdAt DateTime @default(now())
-  quiz      Quiz     @relation(fields: [quizId], references: [id])
+  article   Article  @relation(fields: [articleId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
 }

@@ -1,0 +1,38 @@
+{
+  "node": {
+    "493f736211b9c3f93067cc93f127ca089ddb4298": {
+      "workers": {
+        "app/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2F25LP0860%2Fai%2Fai-quiz-for-students%2Fnode_modules%2F%40clerk%2Fnextjs%2Fdist%2Fesm%2Fapp-router%2Fkeyless-actions.js%22%2C%5B%22syncKeylessConfigAction%22%2C%22deleteKeylessAction%22%2C%22createOrReadKeylessAction%22%5D%5D%5D&__client_imported__=!"
+      },
+      "layer": {
+        "app/page": "rsc"
+      }
+    },
+    "839ad1f13a910b22c90c32ace2fe3d3356231d0a": {
+      "workers": {
+        "app/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2F25LP0860%2Fai%2Fai-quiz-for-students%2Fnode_modules%2F%40clerk%2Fnextjs%2Fdist%2Fesm%2Fapp-router%2Fkeyless-actions.js%22%2C%5B%22syncKeylessConfigAction%22%2C%22deleteKeylessAction%22%2C%22createOrReadKeylessAction%22%5D%5D%5D&__client_imported__=!"
+      },
+      "layer": {
+        "app/page": "rsc"
+      }
+    },
+    "edc7c72b27758ebc0ef4f0e66f3b81de39225b52": {
+      "workers": {
+        "app/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2F25LP0860%2Fai%2Fai-quiz-for-students%2Fnode_modules%2F%40clerk%2Fnextjs%2Fdist%2Fesm%2Fapp-router%2Fkeyless-actions.js%22%2C%5B%22syncKeylessConfigAction%22%2C%22deleteKeylessAction%22%2C%22createOrReadKeylessAction%22%5D%5D%5D&__client_imported__=!"
+      },
+      "layer": {
+        "app/page": "rsc"
+      }
+    },
+    "66d24b24b2b7602fdfe4fb506aaf725cd8cad74c": {
+      "workers": {
+        "app/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2F25LP0860%2Fai%2Fai-quiz-for-students%2Fnode_modules%2F%40clerk%2Fnextjs%2Fdist%2Fesm%2Fapp-router%2Fserver-actions.js%22%2C%5B%22invalidateCacheAction%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/page": "action-browser"
+      }
+    }
+  },
+  "edge": {},
+  "encryptionKey": "zg5OtbEtgeRtfBD9p86Y2RBTaJ3Y6jjM3Y2OnZoCvZI="
+}

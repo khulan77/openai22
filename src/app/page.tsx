@@ -24,12 +24,11 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    // Fetch articles for sidebar
     const fetchArticles = async () => {
       try {
         const response = await fetch("/api/articles");
         const data = await response.json();
-        setArticles(data);
+        setArticles(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
@@ -42,24 +41,35 @@ export default function Home() {
 
   const handleGenerateSummary = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    if (!content.trim()) {
+      toast.error("Текстээ оруулна уу");
+      return;
+    }
 
+    setLoading(true);
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ content }),
+        headers: { "Content-Type": "application/json" },
+       
+        body: JSON.stringify({ 
+          text: content, 
+          title: title || "Гарчиггүй" 
+        }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
         setSummary(data.summary);
+        toast.success("Summary амжилттай үүслээ!");
+      } else {
+      
+        toast.error(data.error || "Алдаа гарлаа");
       }
     } catch (error) {
       console.error("Error:", error);
+      toast.error("Сервертэй холбогдоход алдаа гарлаа");
     } finally {
       setLoading(false);
     }
@@ -67,76 +77,69 @@ export default function Home() {
 
   const handleSaveArticle = async () => {
     if (!summary || !title) {
-      toast.error("Please enter a title and generate a summary first");
+      toast.error("Гарчиг оруулаад, эхлээд Summary үүсгэнэ үү");
       return;
     }
 
     setLoading(true);
-
     try {
-      // Save article to database
       const saveResponse = await fetch("/api/articles", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title,
-          content,
+          content, 
           summary,
-          quizzes: [], // Will be generated on the quiz page
+          quizzes: [],
         }),
       });
 
       if (saveResponse.ok) {
-        const result = await saveResponse.json();
-        toast.success("Article saved successfully!");
-
-        // Refresh articles list
+        toast.success("Амжилттай хадгалагдлаа!");
+       
         const response = await fetch("/api/articles");
         const data = await response.json();
         setArticles(data);
-
-        // Reset form
+        
         setTitle("");
         setContent("");
         setSummary(null);
       }
     } catch (error) {
-      console.error("Error:", error);
-      toast.error("Failed to save article");
+      toast.error("Хадгалахад алдаа гарлаа");
     } finally {
       setLoading(false);
     }
   };
 
   const handleGenerateQuiz = async () => {
-    if (!summary) return;
+    if (!content.trim()) {
+      toast.error("Текст хоосон байна");
+      return;
+    }
+    
     setLoading(true);
-
     try {
-      // Save article and quizzes to database
-      const saveResponse = await fetch("/api/articles", {
+     
+      const response = await fetch("/api/generate", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title:
-            title ||
-            content.substring(0, 50) + (content.length > 50 ? "..." : ""),
-          content,
-          summary,
-          quizzes: [], // Will be generated on the quiz page
+          title: title || content.substring(0, 40) + "...",
+          text: content, 
         }),
       });
 
-      if (saveResponse.ok) {
-        const result = await saveResponse.json();
+      if (response.ok) {
+        const result = await response.json();
+        toast.success("Тест амжилттай үүслээ, шилжиж байна...");
         router.push(`/quiz/${result.id}`);
+      } else {
+        const data = await response.json();
+        toast.error(data.error || "Тест үүсгэхэд алдаа гарлаа");
       }
     } catch (error) {
-      console.error("Error:", error);
+      toast.error("Хүсэлт явуулахад алдаа гарлаа");
     } finally {
       setLoading(false);
     }

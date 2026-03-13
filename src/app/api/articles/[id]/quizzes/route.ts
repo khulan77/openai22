@@ -1,6 +1,13 @@
-import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
-import { Prisma } from "@prisma/client";
+import { NextResponse } from "next/server";
 
-export async function POST(request: Request, { params }) {}
+export async function GET(req: Request, { params }: { params: { id: string } }) {
+  try {
+    const quizzes = await prisma.quiz.findMany({
+      where: { articleId: params.id }, 
+    });
+    return NextResponse.json(quizzes);
+  } catch (error) {
+    return NextResponse.json({ error: "Алдаа гарлаа" }, { status: 500 });
+  }
+}
