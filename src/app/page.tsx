@@ -145,7 +145,6 @@ export default function Home() {
 
   return (
     <div className="flex">
-      <div>khulan</div>
       <Sidebar articles={articles} loading={articleLoading} />
       <main className="flex-1 min-h-screen p-8 bg-gray-50">
         <div className="max-w-2xl mx-auto">
