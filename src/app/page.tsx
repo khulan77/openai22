@@ -51,10 +51,10 @@ export default function Home() {
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-       
-        body: JSON.stringify({ 
-          text: content, 
-          title: title || "Гарчиггүй" 
+
+        body: JSON.stringify({
+          text: content,
+          title: title || "Гарчиггүй",
         }),
       });
 
@@ -64,7 +64,6 @@ export default function Home() {
         setSummary(data.summary);
         toast.success("Summary амжилттай үүслээ!");
       } else {
-      
         toast.error(data.error || "Алдаа гарлаа");
       }
     } catch (error) {
@@ -88,7 +87,7 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title,
-          content, 
+          content,
           summary,
           quizzes: [],
         }),
@@ -96,11 +95,11 @@ export default function Home() {
 
       if (saveResponse.ok) {
         toast.success("Амжилттай хадгалагдлаа!");
-       
+
         const response = await fetch("/api/articles");
         const data = await response.json();
         setArticles(data);
-        
+
         setTitle("");
         setContent("");
         setSummary(null);
@@ -117,16 +116,15 @@ export default function Home() {
       toast.error("Текст хоосон байна");
       return;
     }
-    
+
     setLoading(true);
     try {
-     
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: title || content.substring(0, 40) + "...",
-          text: content, 
+          text: content,
         }),
       });
 
@@ -147,9 +145,10 @@ export default function Home() {
 
   return (
     <div className="flex">
+      <div>khulan</div>
       <Sidebar articles={articles} loading={articleLoading} />
-      <main className="flex-1 p-8 min-h-screen bg-gray-50">
-        <div className="mx-auto max-w-2xl">
+      <main className="flex-1 min-h-screen p-8 bg-gray-50">
+        <div className="max-w-2xl mx-auto">
           <ArticleForm
             title={title}
             content={content}
