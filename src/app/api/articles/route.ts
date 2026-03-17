@@ -19,18 +19,22 @@ export async function POST(req: Request) {
         summary,
         userId: user.id,
         quizzes: {
-          create: quizzes?.map((q: any) => ({
-            question: q.question,
-            options: q.options,
-            answer: q.answer,
-          })) || [],
+          create:
+            quizzes?.map((q: any) => ({
+              question: q.question,
+              options: q.options,
+              answer: q.answer,
+            })) || [],
         },
       },
     });
 
     return NextResponse.json(article);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to create article" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create article" },
+      { status: 500 },
+    );
   }
 }
 
@@ -46,6 +50,9 @@ export async function GET() {
 
     return NextResponse.json(articles);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch articles" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch articles" },
+      { status: 500 },
+    );
   }
 }

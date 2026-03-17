@@ -10,6 +10,8 @@ interface Article {
   id: string;
   title: string;
   summary: string;
+  content: string; // Нэмсэн
+  quizzes?: any[]; // Нэмсэн
   createdAt: string;
 }
 
@@ -23,24 +25,26 @@ export default function Home() {
   const [articles, setArticles] = useState<Article[]>([]);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const response = await fetch("/api/articles");
-        const data = await response.json();
-        setArticles(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error("Error fetching articles:", error);
-      } finally {
-        setArticleLoading(false);
-      }
-    };
+  // Нийтлэлүүдийг татаж авах функц
+  const fetchArticles = async () => {
+    try {
+      const response = await fetch("/api/articles");
+      const data = await response.json();
+      setArticles(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Error fetching articles:", error);
+    } finally {
+      setArticleLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchArticles();
   }, []);
 
   const handleGenerateSummary = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return; // Сэргийлэлт
     if (!content.trim()) {
       toast.error("Текстээ оруулна уу");
       return;
@@ -51,7 +55,6 @@ export default function Home() {
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-
         body: JSON.stringify({
           text: content,
           title: title || "Гарчиггүй",
@@ -59,7 +62,6 @@ export default function Home() {
       });
 
       const data = await response.json();
-
       if (response.ok) {
         setSummary(data.summary);
         toast.success("Summary амжилттай үүслээ!");
@@ -67,7 +69,6 @@ export default function Home() {
         toast.error(data.error || "Алдаа гарлаа");
       }
     } catch (error) {
-      console.error("Error:", error);
       toast.error("Сервертэй холбогдоход алдаа гарлаа");
     } finally {
       setLoading(false);
@@ -75,6 +76,9 @@ export default function Home() {
   };
 
   const handleSaveArticle = async () => {
+    // 1. Double save-ээс сэргийлэх
+    if (loading) return;
+
     if (!summary || !title) {
       toast.error("Гарчиг оруулаад, эхлээд Summary үүсгэнэ үү");
       return;
@@ -96,13 +100,15 @@ export default function Home() {
       if (saveResponse.ok) {
         toast.success("Амжилттай хадгалагдлаа!");
 
-        const response = await fetch("/api/articles");
-        const data = await response.json();
-        setArticles(data);
+        // Датаг дахин татаж History-г шинэчлэх
+        await fetchArticles();
 
+        // Form цэвэрлэх
         setTitle("");
         setContent("");
         setSummary(null);
+      } else {
+        toast.error("Хадгалахад алдаа гарлаа");
       }
     } catch (error) {
       toast.error("Хадгалахад алдаа гарлаа");
@@ -112,6 +118,7 @@ export default function Home() {
   };
 
   const handleGenerateQuiz = async () => {
+    if (loading) return;
     if (!content.trim()) {
       toast.error("Текст хоосон байна");
       return;
