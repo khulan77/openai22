@@ -9,6 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import SidebarSkeleton from "./SidebarSkeleton";
 
@@ -22,9 +29,14 @@ interface Article {
 interface SidebarProps {
   articles: Article[];
   loading?: boolean;
+  onDelete?: (id: string) => void;
 }
 
-export default function Sidebar({ articles, loading = false }: SidebarProps) {
+export default function Sidebar({
+  articles,
+  loading = false,
+  onDelete,
+}: SidebarProps) {
   const router = useRouter();
 
   const handleArticleClick = (articleId: string) => {
@@ -35,9 +47,20 @@ export default function Sidebar({ articles, loading = false }: SidebarProps) {
     router.push(`/quiz/${articleId}`);
   };
 
+  const handleDelete = (articleId: string) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this article?"
+    );
+
+    if (confirmed) {
+      onDelete?.(articleId);
+    }
+  };
+
   return (
-    <div className="overflow-y-auto p-4 w-80 h-screen bg-white border-r">
+    <div className="h-screen w-80 overflow-y-auto border-r bg-white p-4">
       <h2 className="mb-4 text-xl font-bold">Article History</h2>
+
       <div className="space-y-4">
         {loading ? (
           <SidebarSkeleton />
@@ -45,11 +68,38 @@ export default function Sidebar({ articles, loading = false }: SidebarProps) {
           articles.map((article) => (
             <Card
               key={article.id}
-              className="overflow-hidden transition-shadow cursor-pointer hover:shadow-md"
               onClick={() => handleArticleClick(article.id)}
+              className="group relative cursor-pointer overflow-hidden transition-shadow hover:shadow-md"
             >
-              <CardHeader className="p-4">
-                <CardTitle className="text-lg line-clamp-2">
+              <div className="absolute right-3 top-3 z-10 opacity-0 transition-opacity group-hover:opacity-100">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      className="text-red-600 focus:text-red-600"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(article.id);
+                      }}
+                    >
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+
+              <CardHeader className="p-4 pr-12">
+                <CardTitle className="line-clamp-2 text-lg">
                   {article.title}
                 </CardTitle>
                 <p className="text-xs text-gray-500">
@@ -58,11 +108,13 @@ export default function Sidebar({ articles, loading = false }: SidebarProps) {
                   })}
                 </p>
               </CardHeader>
+
               <CardContent className="p-4 pt-0">
-                <p className="text-sm text-gray-600 line-clamp-3">
+                <p className="line-clamp-3 text-sm text-gray-600">
                   {article.summary}
                 </p>
               </CardContent>
+
               <CardFooter className="flex justify-end p-4 pt-0">
                 <Button
                   variant="outline"

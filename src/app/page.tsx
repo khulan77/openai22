@@ -31,6 +31,7 @@ export default function Home() {
         setArticles(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching articles:", error);
+        toast.error("Нийтлэлүүд ачаалахад алдаа гарлаа");
       } finally {
         setArticleLoading(false);
       }
@@ -38,6 +39,28 @@ export default function Home() {
 
     fetchArticles();
   }, []);
+
+ const handleDeleteArticle = async (id: string) => {
+  try {
+    const response = await fetch(`/api/articles/${id}`, {
+      method: "DELETE",
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      toast.error(data?.error || "Устгахад алдаа гарлаа");
+      return;
+    }
+
+    setArticles((prev) => prev.filter((article) => article.id !== id));
+    toast.success("Амжилттай устгалаа");
+  } catch (error) {
+    console.error("Delete error:", error);
+    toast.error("Сервертэй холбогдоход алдаа гарлаа");
+  }
+};
+
 
   const handleGenerateSummary = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,7 +74,6 @@ export default function Home() {
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-
         body: JSON.stringify({
           text: content,
           title: title || "Гарчиггүй",
@@ -98,13 +120,17 @@ export default function Home() {
 
         const response = await fetch("/api/articles");
         const data = await response.json();
-        setArticles(data);
+        setArticles(Array.isArray(data) ? data : []);
 
         setTitle("");
         setContent("");
         setSummary(null);
+      } else {
+        const data = await saveResponse.json().catch(() => null);
+        toast.error(data?.error || "Хадгалахад алдаа гарлаа");
       }
     } catch (error) {
+      console.error("Save error:", error);
       toast.error("Хадгалахад алдаа гарлаа");
     } finally {
       setLoading(false);
@@ -137,6 +163,7 @@ export default function Home() {
         toast.error(data.error || "Тест үүсгэхэд алдаа гарлаа");
       }
     } catch (error) {
+      console.error("Quiz error:", error);
       toast.error("Хүсэлт явуулахад алдаа гарлаа");
     } finally {
       setLoading(false);
@@ -145,9 +172,14 @@ export default function Home() {
 
   return (
     <div className="flex">
-      <Sidebar articles={articles} loading={articleLoading} />
-      <main className="flex-1 min-h-screen p-8 bg-gray-50">
-        <div className="max-w-2xl mx-auto">
+     <Sidebar
+  articles={articles}
+  loading={articleLoading}
+  onDelete={handleDeleteArticle}
+/>
+
+      <main className="min-h-screen flex-1 bg-gray-50 p-8">
+        <div className="mx-auto max-w-2xl">
           <ArticleForm
             title={title}
             content={content}
