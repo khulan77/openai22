@@ -122,8 +122,8 @@ export default function ArticleForm({
               <Button
                 type="button"
                 onClick={onSaveArticle}
-                disabled={loading || !title}
-                variant="outline"
+                disabled={loading}
+                
                 className="flex items-center gap-2"
               >
                 <Save className="w-4 h-4" />
